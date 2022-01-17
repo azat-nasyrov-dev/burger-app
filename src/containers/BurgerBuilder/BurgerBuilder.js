@@ -18,10 +18,9 @@ const BurgerBuilder = () => {
     cheese: 0,
     meat: 0
   });
-
   const [totalPrice, setTotalPrice] = useState(20);
-
   const [purchasable, setPurchasable] = useState(false);
+  const [purchasing, setPurchasing] = useState(false);
 
   const addIngredientHandler = type => {
     const updatedIngredients = {
@@ -54,12 +53,29 @@ const BurgerBuilder = () => {
     setPurchasable(sum > 0);
   };
 
+  const purchaseHandler = () => {
+    setPurchasing(true);
+  };
+
+  const purchaseCancelHandler = () => {
+    setPurchasing(false);
+  };
+
+  const purchaseContinueHandler = () => {
+    alert('You continued!');
+  };
+
   return (
     <>
-      <Modal>
+      <Modal
+        show={purchasing}
+        closed={purchaseCancelHandler}
+      >
         <OrderSummary
           ingredients={ingredients}
           price={totalPrice}
+          purchaseCancelled={purchaseCancelHandler}
+          purchaseContinued={purchaseContinueHandler}
         />
       </Modal>
       <Burger ingredients={ingredients}/>
@@ -69,6 +85,7 @@ const BurgerBuilder = () => {
         ingredientAdded={addIngredientHandler}
         ingredientRemoved={removeIngredientHandler}
         purchasable={purchasable}
+        ordered={purchaseHandler}
       />
     </>
   );
