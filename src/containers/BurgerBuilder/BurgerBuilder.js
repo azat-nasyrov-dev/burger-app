@@ -11,7 +11,7 @@ const INGREDIENT_PRICES = {
   bacon: 30,
 };
 
-const BurgerBuilder = () => {
+const BurgerBuilder = props => {
   const [ingredients, setIngredients] = useState({
     salad: 0,
     bacon: 0,
@@ -62,7 +62,9 @@ const BurgerBuilder = () => {
   };
 
   const purchaseContinueHandler = () => {
-    alert('You continued!');
+    props.history.push({
+      pathname: '/checkout'
+    });
   };
 
   return (
