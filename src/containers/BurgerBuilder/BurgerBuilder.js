@@ -62,8 +62,11 @@ const BurgerBuilder = props => {
   };
 
   const purchaseContinueHandler = () => {
+    const params = new URLSearchParams(ingredients);
+
     props.history.push({
-      pathname: '/checkout'
+      pathname: '/checkout',
+      search: '?' + params.toString()
     });
   };
 
