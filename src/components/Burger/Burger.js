@@ -1,6 +1,6 @@
 import React from 'react';
-import './Burger.css';
 import Ingredient from "./Ingredient/Ingredient";
+import './Burger.css';
 
 const Burger = ({ingredients}) => {
   const ingredientKeys = Object.keys(ingredients);

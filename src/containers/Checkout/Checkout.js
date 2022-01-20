@@ -2,6 +2,14 @@ import React, {useRef} from 'react';
 import {Route} from "react-router-dom";
 import CheckoutSummary from "../../components/Order/CheckoutSummary/CheckoutSummary";
 import ContactData from "./ContactData/ContactData";
+import {INGREDIENT_PRICES} from "../../constants";
+
+const getTotalPrice = ingredients => {
+  return Object.keys(ingredients).reduce((total, ingName) => {
+    total += ingredients[ingName] * INGREDIENT_PRICES[ingName];
+    return total;
+  }, 0);
+};
 
 const parseSearch = search => {
   const params = new URLSearchParams(search);
@@ -20,6 +28,8 @@ const Checkout = props => {
     props.history.replace('/checkout/contact-data');
   };
 
+  const price = getTotalPrice(ingredients);
+
   return (
     <>
       <CheckoutSummary
@@ -31,7 +41,7 @@ const Checkout = props => {
         path={props.match.path + '/contact-data'}
         // component={ContactData}
         render={props => (
-          <ContactData ingredients={ingredients.current}/>
+          <ContactData ingredients={ingredients.current} price={price}/>
         )}
       />
     </>

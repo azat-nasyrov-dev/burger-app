@@ -3,13 +3,7 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-
-const INGREDIENT_PRICES = {
-  salad: 5,
-  cheese: 20,
-  meat: 50,
-  bacon: 30,
-};
+import {INGREDIENT_PRICES} from "../../constants";
 
 const BurgerBuilder = props => {
   const [ingredients, setIngredients] = useState({
