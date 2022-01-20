@@ -8,7 +8,7 @@ const getTotalPrice = ingredients => {
   return Object.keys(ingredients).reduce((total, ingName) => {
     total += ingredients[ingName] * INGREDIENT_PRICES[ingName];
     return total;
-  }, 0);
+  }, 20);
 };
 
 const parseSearch = search => {
@@ -28,7 +28,7 @@ const Checkout = props => {
     props.history.replace('/checkout/contact-data');
   };
 
-  const price = getTotalPrice(ingredients);
+  const price = getTotalPrice(ingredients.current);
 
   return (
     <>
@@ -41,7 +41,7 @@ const Checkout = props => {
         path={props.match.path + '/contact-data'}
         // component={ContactData}
         render={props => (
-          <ContactData ingredients={ingredients.current} price={price}/>
+          <ContactData ingredients={ingredients.current} price={price} {...props}/>
         )}
       />
     </>
