@@ -3,6 +3,7 @@ import axiosOrders from "../../axios-orders";
 import OrderItem from "../../components/Order/OrderItem/OrderItem";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -22,11 +23,13 @@ const Orders = () => {
   }, []);
 
   let ordersOutput = orders.map(order => (
-    <OrderItem
-      key={order.id}
-      ingredients={order.ingredients}
-      price={order.price}
-    />
+    <ErrorBoundary key={order.id}>
+      <OrderItem
+        key={order.id}
+        ingredients={order.ingredients}
+        price={order.price}
+      />
+    </ErrorBoundary>
   ));
 
   if (loading) {

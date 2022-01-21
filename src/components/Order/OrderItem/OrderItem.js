@@ -2,6 +2,8 @@ import React from 'react';
 import './OrderItem.css';
 
 const OrderItem = ({ingredients, price}) => {
+  if (Math.random() > 0.5) throw new Error('Well, this happened');
+
   const ingredientsArr = Object.keys(ingredients).map(igName => {
     return {
       name: igName,
