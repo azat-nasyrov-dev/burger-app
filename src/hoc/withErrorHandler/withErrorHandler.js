@@ -5,19 +5,28 @@ const withErrorHandler = (WrappedComponent, axios) => {
   return function WithErrorHandler(props) {
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-      axios.interceptors.response.use(response => {
-        console.log('[In hoc interceptor]', response);
-        return response;
-      }, error => {
+    const icId = React.useMemo(() => {
+      return axios.interceptors.response.use(res => res, error => {
         setError(error);
         throw error;
       })
     }, []);
 
+    useEffect(() => {
+      return () => {
+        axios.interceptors.response.eject(icId);
+      }
+    }, [icId]);
+
+    const errorDismissed = () => {
+      setError(null);
+    };
+
     return (
       <>
-        <Modal show>This is error message</Modal>
+        <Modal show={!!error} closed={errorDismissed}>
+          {error && (error.message || "Network error")}
+        </Modal>
         <WrappedComponent {...props}/>
       </>
     );
