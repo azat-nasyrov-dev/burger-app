@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axiosOrders from "../../axios-orders";
 import OrderItem from "../../components/Order/OrderItem/OrderItem";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -35,4 +36,4 @@ const Orders = () => {
   return ordersOutput;
 };
 
-export default Orders;
+export default withErrorHandler(Orders, axiosOrders);
