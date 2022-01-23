@@ -1,58 +1,79 @@
-import React, {useState} from 'react';
+import React, {useReducer, useState} from 'react';
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import {INGREDIENT_PRICES} from "../../constants";
 
-const BurgerBuilder = props => {
-  const [ingredients, setIngredients] = useState({
+const ADD_INGREDIENT = 'ADD_INGREDIENT';
+const REMOVE_INGREDIENT = 'REMOVE_INGREDIENT';
+const SET_PURCHASING = 'SET_PURCHASING';
+
+const initialState = {
+  ingredients: {
     salad: 0,
     bacon: 0,
     cheese: 0,
     meat: 0
-  });
-  const [totalPrice, setTotalPrice] = useState(20);
-  const [purchasable, setPurchasable] = useState(false);
-  const [purchasing, setPurchasing] = useState(false);
+  },
+  totalPrice: 20,
+  purchasing: false,
+};
 
-  const addIngredientHandler = type => {
-    const updatedIngredients = {
-      ...ingredients,
-      [type]: ingredients[type] + 1
-    };
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ADD_INGREDIENT:
+      return {
+        ...state,
+        ingredients: {
+          ...state.ingredients,
+          [action.ingName]: state.ingredients[action.ingName] + 1
+        },
+        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingName]
+      }
+    case REMOVE_INGREDIENT:
+      if (state.ingredients[action.ingName] <= 0) return state;
 
-    setIngredients(updatedIngredients);
-    setTotalPrice(totalPrice + INGREDIENT_PRICES[type]);
-    updatePurchaseState(updatedIngredients);
+      return {
+        ...state,
+        ingredients: {
+          ...state.ingredients,
+          [action.ingName]: state.ingredients[action.ingName] - 1
+        },
+        totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingName]
+      }
+    case SET_PURCHASING:
+      return {...state, purchasing: action.purchasing};
+    default:
+      return state;
+  }
+};
+
+const BurgerBuilder = props => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const {ingredients, purchasing, totalPrice} = state;
+
+  const addIngredientHandler = ingName => {
+    dispatch({type: ADD_INGREDIENT, ingName});
   };
 
-  const removeIngredientHandler = type => {
-    if (ingredients[type] <= 0) return;
-
-    const updatedIngredients = {
-      ...ingredients,
-      [type]: ingredients[type] - 1
-    };
-
-    setIngredients(updatedIngredients);
-    setTotalPrice(totalPrice - INGREDIENT_PRICES[type]);
-    updatePurchaseState(updatedIngredients);
+  const removeIngredientHandler = ingName => {
+    dispatch({type: REMOVE_INGREDIENT, ingName});
   };
 
-  const updatePurchaseState = ingredients => {
+  const isPurchasable = () => {
     const sum = Object.values(ingredients)
       .reduce((sum, value) => sum + value, 0);
 
-    setPurchasable(sum > 0);
+    return sum > 0;
   };
 
   const purchaseHandler = () => {
-    setPurchasing(true);
+    dispatch({type: SET_PURCHASING, purchasing: true});
   };
 
   const purchaseCancelHandler = () => {
-    setPurchasing(false);
+    dispatch({type: SET_PURCHASING, purchasing: false});
   };
 
   const purchaseContinueHandler = () => {
@@ -83,7 +104,7 @@ const BurgerBuilder = props => {
         price={totalPrice}
         ingredientAdded={addIngredientHandler}
         ingredientRemoved={removeIngredientHandler}
-        purchasable={purchasable}
+        purchasable={isPurchasable()}
         ordered={purchaseHandler}
       />
     </>
