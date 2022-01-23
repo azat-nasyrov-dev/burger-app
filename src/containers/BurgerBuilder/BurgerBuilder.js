@@ -1,64 +1,23 @@
-import React, {useReducer, useState} from 'react';
+import React from 'react';
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import {INGREDIENT_PRICES} from "../../constants";
-
-const ADD_INGREDIENT = 'ADD_INGREDIENT';
-const REMOVE_INGREDIENT = 'REMOVE_INGREDIENT';
-const SET_PURCHASING = 'SET_PURCHASING';
-
-const initialState = {
-  ingredients: {
-    salad: 0,
-    bacon: 0,
-    cheese: 0,
-    meat: 0
-  },
-  totalPrice: 20,
-  purchasing: false,
-};
-
-const reducer = (state, action) => {
-  switch (action.type) {
-    case ADD_INGREDIENT:
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingName]: state.ingredients[action.ingName] + 1
-        },
-        totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingName]
-      }
-    case REMOVE_INGREDIENT:
-      if (state.ingredients[action.ingName] <= 0) return state;
-
-      return {
-        ...state,
-        ingredients: {
-          ...state.ingredients,
-          [action.ingName]: state.ingredients[action.ingName] - 1
-        },
-        totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingName]
-      }
-    case SET_PURCHASING:
-      return {...state, purchasing: action.purchasing};
-    default:
-      return state;
-  }
-};
+import {useDispatch, useSelector} from "react-redux";
+import {addIngredient, removeIngredient, setPurchasing} from "../../store/actions/burgerBuilderActions";
 
 const BurgerBuilder = props => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const {ingredients, purchasing, totalPrice} = state;
+  const dispatch = useDispatch();
+  const ingredients = useSelector(state => state.ingredients);
+  const totalPrice = useSelector(state => state.totalPrice);
+  const purchasing = useSelector(state => state.purchasing);
 
   const addIngredientHandler = ingName => {
-    dispatch({type: ADD_INGREDIENT, ingName});
+    dispatch(addIngredient(ingName));
   };
 
   const removeIngredientHandler = ingName => {
-    dispatch({type: REMOVE_INGREDIENT, ingName});
+    dispatch(removeIngredient(ingName));
   };
 
   const isPurchasable = () => {
@@ -69,11 +28,11 @@ const BurgerBuilder = props => {
   };
 
   const purchaseHandler = () => {
-    dispatch({type: SET_PURCHASING, purchasing: true});
+    dispatch(setPurchasing(true));
   };
 
   const purchaseCancelHandler = () => {
-    dispatch({type: SET_PURCHASING, purchasing: false});
+    dispatch(setPurchasing(false));
   };
 
   const purchaseContinueHandler = () => {
