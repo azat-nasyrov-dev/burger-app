@@ -3,8 +3,22 @@ import axiosOrders from "../../../axios-orders";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import './ContactData.css';
+import {useSelector} from "react-redux";
 
 const ContactData = props => {
+  const ingredients = useSelector(state => state.burgerBuilder.ingredients);
+  const totalPrice = useSelector(state => state.burgerBuilder.totalPrice);
+
+  /*
+  Этот вариант Advanced Case!
+  const {ingredients, totalPrice} = useSelector(state => {
+    return {
+      ingredients: state.burgerBuilder.ingredients,
+      totalPrice: state.burgerBuilder.totalPrice
+    }
+  }, shallowEqual);
+   */
+
   const [customer, setCustomer] = useState({
     name: '',
     email: '',
@@ -28,8 +42,8 @@ const ContactData = props => {
     setLoading(true);
 
     const order = {
-      ingredients: props.ingredients,
-      price: props.price,
+      ingredients,
+      price: totalPrice,
       customer: {...customer}
     };
 

@@ -1,5 +1,5 @@
-import {INGREDIENT_PRICES} from "../constants";
-import {ADD_INGREDIENT, REMOVE_INGREDIENT, SET_PURCHASING} from "./actions/burgerBuilderActions";
+import {INGREDIENT_PRICES} from "../../constants";
+import {ADD_INGREDIENT, INIT_BURGER_BUILDER, REMOVE_INGREDIENT, SET_PURCHASING} from "../actions/burgerBuilderActions";
 
 const initialState = {
   ingredients: {
@@ -12,8 +12,10 @@ const initialState = {
   purchasing: false,
 };
 
-const reducer = (state = initialState, action) => {
+const burgerBuilderReducer = (state = initialState, action) => {
   switch (action.type) {
+    case INIT_BURGER_BUILDER:
+      return {...initialState};
     case ADD_INGREDIENT:
       return {
         ...state,
@@ -41,4 +43,4 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export default reducer;
+export default burgerBuilderReducer;

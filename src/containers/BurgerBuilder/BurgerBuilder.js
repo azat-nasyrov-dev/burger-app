@@ -1,16 +1,23 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import {useDispatch, useSelector} from "react-redux";
-import {addIngredient, removeIngredient, setPurchasing} from "../../store/actions/burgerBuilderActions";
+import {
+  addIngredient,
+  initBurgerBuilder,
+  removeIngredient,
+  setPurchasing
+} from "../../store/actions/burgerBuilderActions";
 
 const BurgerBuilder = props => {
   const dispatch = useDispatch();
-  const ingredients = useSelector(state => state.ingredients);
-  const totalPrice = useSelector(state => state.totalPrice);
-  const purchasing = useSelector(state => state.purchasing);
+  const {ingredients, totalPrice, purchasing} = useSelector(state => state.burgerBuilder);
+
+  useEffect(() => {
+    dispatch(initBurgerBuilder());
+  }, [dispatch]);
 
   const addIngredientHandler = ingName => {
     dispatch(addIngredient(ingName));
@@ -36,12 +43,7 @@ const BurgerBuilder = props => {
   };
 
   const purchaseContinueHandler = () => {
-    const params = new URLSearchParams(ingredients);
-
-    props.history.push({
-      pathname: '/checkout',
-      search: '?' + params.toString()
-    });
+    props.history.push('/checkout');
   };
 
   return (
