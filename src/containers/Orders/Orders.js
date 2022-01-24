@@ -1,26 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import axiosOrders from "../../axios-orders";
 import OrderItem from "../../components/Order/OrderItem/OrderItem";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import ErrorBoundary from "../../components/ErrorBoundary/ErrorBoundary";
+import {fetchOrders} from "../../store/actions/ordersActions";
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const orders = useSelector(state => state.orders.orders);
+  const loading = useSelector(state => state.orders.fetchLoading);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await axiosOrders.get('/orders.json');
-      const fetchedOrders = Object.keys(response.data).map(id => {
-        return {...response.data[id], id};
-      });
-
-      setOrders(fetchedOrders);
-    };
-
-    fetchData().finally(() => setLoading(false));
-  }, []);
+    dispatch(fetchOrders());
+  }, [dispatch]);
 
   let ordersOutput = orders.map(order => (
     <ErrorBoundary key={order.id}>

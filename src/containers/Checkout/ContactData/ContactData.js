@@ -1,20 +1,25 @@
 import React, {useState} from 'react';
-import axiosOrders from "../../../axios-orders";
+import {useDispatch, useSelector} from "react-redux";
+import {Redirect} from "react-router-dom";
 import Button from "../../../components/UI/Button/Button";
 import Spinner from "../../../components/UI/Spinner/Spinner";
+import {createOrder} from "../../../store/actions/ordersActions";
 import './ContactData.css';
-import {useSelector} from "react-redux";
 
 const ContactData = props => {
+  const dispatch = useDispatch();
   const ingredients = useSelector(state => state.burgerBuilder.ingredients);
   const totalPrice = useSelector(state => state.burgerBuilder.totalPrice);
+  const loading = useSelector(state => state.orders.loading);
+  const ordered = useSelector(state => state.orders.ordered);
 
   /*
   Этот вариант Advanced Case!
   const {ingredients, totalPrice} = useSelector(state => {
     return {
       ingredients: state.burgerBuilder.ingredients,
-      totalPrice: state.burgerBuilder.totalPrice
+      totalPrice: state.burgerBuilder.totalPrice,
+      loading: state.orders.loading
     }
   }, shallowEqual);
    */
@@ -26,8 +31,6 @@ const ContactData = props => {
     postal: '',
   });
 
-  const [loading, setLoading] = useState(false);
-
   const customerDataChanged = event => {
     const {name, value} = event.target;
 
@@ -37,22 +40,15 @@ const ContactData = props => {
     }));
   };
 
-  const orderHandler = async event => {
+  const orderHandler = event => {
     event.preventDefault();
-    setLoading(true);
 
     const order = {
       ingredients,
       price: totalPrice,
       customer: {...customer}
     };
-
-    try {
-      await axiosOrders.post('/orders.json', order);
-    } finally {
-      setLoading(false);
-      props.history.push('/');
-    }
+    dispatch(createOrder(order));
   };
 
   let form = (
@@ -87,6 +83,10 @@ const ContactData = props => {
 
   if (loading) {
     form = <Spinner/>
+  }
+
+  if (ordered) {
+    form = <Redirect to="/"/>
   }
 
   return (

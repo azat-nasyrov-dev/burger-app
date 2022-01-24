@@ -10,6 +10,7 @@ import {
   removeIngredient,
   setPurchasing
 } from "../../store/actions/burgerBuilderActions";
+import {initOrder} from "../../store/actions/ordersActions";
 
 const BurgerBuilder = props => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const BurgerBuilder = props => {
   };
 
   const purchaseContinueHandler = () => {
+    dispatch(initOrder());
     props.history.push('/checkout');
   };
 
